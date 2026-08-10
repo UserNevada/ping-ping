@@ -1,0 +1,17 @@
+[project]
+name = "ping"
+version = "0.1.0"
+description = "Personal Discord Bot that pings a role when someone joins a voice channel."
+readme = "README.md"
+authors = [
+    { name = "Nevada", email = "migatosellamakiko@proton.me" }
+]
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+ping = "ping:main"
+
+[build-system]
+requires = ["uv_build>=0.12.3,<0.13.0"]
+build-backend = "uv_build"
