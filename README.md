@@ -5,4 +5,5 @@ Personal Discord Bot that pings a role when someone joins a voice channel.
 - [x] Go online
 - [x] When entering voice channel...
     - [x] Log
-    - [ ] Send message
+    - [x] Send message
+- [ ] Wait to avoid accidental alert
