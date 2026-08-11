@@ -12,8 +12,19 @@ class MyClient(discord.Client):
     async def on_ready(self) -> None:
         print(f"Logged on as {self.user}!")
 
+    async def on_voice_state_update(self, member: discord.Member, before: discord.VoiceState, after: discord.VoiceState) -> None:
+        if after.channel == None:
+            return
+        if not before.channel != after.channel:
+            # this way we make sure that this won't get triggered by
+            # mute or deaf states
+            return
+
+        print(f"{member.name} Joined a Voice Channel")
+
 
 def run_client() -> None:
+    INTENTS.voice_states = True
     client = MyClient(intents=INTENTS)
 
     if not BOT_TOKEN is None:
