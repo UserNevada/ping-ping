@@ -1,8 +1,8 @@
 # ping
 Personal Discord Bot that pings a role when someone joins a voice channel.
 
-- [ ] Add discord.py
-- [ ] Go online
+- [x] Add discord.py
+- [x] Go online
 - [ ] When entering voice channel
     - [ ] Log
     - [ ] Send message

@@ -7,7 +7,10 @@ authors = [
     { name = "Nevada", email = "migatosellamakiko@proton.me" }
 ]
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "discord-py>=2.7.1",
+    "python-dotenv>=1.2.2",
+]
 
 [project.scripts]
 ping = "ping:main"
