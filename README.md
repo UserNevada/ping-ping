@@ -8,4 +8,8 @@ Personal Discord Bot that pings a role when someone joins a voice channel.
     - [x] Send message
 - [x] Wait to avoid accidental alert
 - [x] format with ruff
+- [ ] Give a role
+- [ ] Ping the role 
+    - How could I forget this???
+
 - I guess it needs more refactor and perhaps creating more files...
