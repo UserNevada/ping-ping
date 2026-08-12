@@ -13,7 +13,7 @@ TIME_TO_CONFIRM: int = 10
 INTENTS = discord.Intents.default()
 
 
-class MyClient(discord.Client):
+class PingClient(discord.Client):
     async def on_ready(self) -> None:
         print(f"Logged on as {self.user}!")
 
@@ -81,7 +81,7 @@ class MyClient(discord.Client):
 
 def run_client() -> None:
     INTENTS.voice_states = True
-    client = MyClient(intents=INTENTS)
+    client = PingClient(intents=INTENTS)
 
     if not BOT_TOKEN is None:
         client.run(BOT_TOKEN)
