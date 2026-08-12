@@ -1,5 +1,7 @@
 import discord
 from discord import Member, VoiceState
+from discord.errors import NotFound
+from time import sleep
 from dotenv import load_dotenv
 from os import getenv
 
@@ -7,6 +9,7 @@ from os import getenv
 load_dotenv()
 BOT_TOKEN = getenv("DISCORD_BOT_TOKEN")
 ALERT_CHANNEL_ID = getenv("DISCORD_BOT_ALERT_CHANNEL_ID")
+TIME_TO_CONFIRM: int = 10
 INTENTS = discord.Intents.default()
 
 
@@ -15,15 +18,38 @@ class MyClient(discord.Client):
         print(f"Logged on as {self.user}!")
 
     async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState) -> None:
-        if after.channel == None:
+        if after.channel == None: # if joining and not leaving
             return
         if not before.channel != after.channel:
             # this way we make sure that this won't get triggered by
             # mute or deaf states
             return
+        if len(after.channel.members) > 1: # If you're the first one
+            print(len(after.channel.members))
+            print(f"{member.name} is not the first")
+            return
+
 
         print(f"{member.name} Joined a Voice Channel")
-        await self.voice_channel_alert(member.display_name)
+
+        # Wait to avoid doing ping on accidental join
+        self.wait_before_ping()
+
+        # Are you still here?
+        # Maybe another channel or disconnected?
+
+        # if joining and not changing.
+        # We fetch_voice for checking if the user is still in a voice channel
+        # if not it will throw an error, let's take advantage of that
+        try:
+            await member.fetch_voice()
+            if not before.channel is None:
+                self.voice_channel_alert(member.display_name).close()
+                print(f"{member.name} changed channel...")
+            else:
+                await self.voice_channel_alert(member.display_name)
+        except NotFound:
+            print(f"{member.name} left...")
 
     async def voice_channel_alert(self, member_name: str) -> None:
         print("Alert!")
@@ -39,10 +65,18 @@ class MyClient(discord.Client):
 
     def create_alert_message(self, member_name: str, channel_name: str) -> str:
         alert_message: str = f"""
-        🚨 @{member_name} Joined {channel_name}! 🚨
+        🚨 {member_name} Joined {channel_name}! 🚨
         Go join him, now!
         """
         return alert_message
+
+    def wait_before_ping(self) -> None:
+        time: int = 0
+        print("Start countdown...")
+        while time < TIME_TO_CONFIRM:
+            sleep(1)
+            time += 1
+        print("Countdown done!")
 
 
 def run_client() -> None:
