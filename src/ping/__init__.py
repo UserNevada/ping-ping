@@ -1,10 +1,10 @@
+from os import getenv
+from time import sleep
+
 import discord
 from discord import Member, VoiceState
 from discord.errors import NotFound
-from time import sleep
 from dotenv import load_dotenv
-from os import getenv
-
 
 load_dotenv()
 BOT_TOKEN = getenv("DISCORD_BOT_TOKEN")
@@ -20,7 +20,7 @@ class MyClient(discord.Client):
     async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState) -> None:
         if after.channel == None: # if joining and not leaving
             return
-        if not before.channel != after.channel:
+        if before.channel == after.channel:
             # this way we make sure that this won't get triggered by
             # mute or deaf states
             return
