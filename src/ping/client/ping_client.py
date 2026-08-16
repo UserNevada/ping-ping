@@ -30,6 +30,7 @@ class PingClient(discord.Client):
     @staticmethod
     async def _wait_before_ping(time_to_confirm: int) -> None:
         print("Start countdown...")
+        # I wonder if this is possible without asyncio...
         import asyncio
         await asyncio.sleep(time_to_confirm)
         print("Countdown done!")
@@ -63,6 +64,7 @@ class PingClient(discord.Client):
                 return
 
             if before.channel is not None:
+                # If we don't close we'll send an alert twice
                 self.voice_channel_alert(member.display_name, voice_state.channel.name, DISCORD_BOT_ALERT_CHANNEL_ID).close()
                 print(f"{member.name} changed channel...")
             else:
