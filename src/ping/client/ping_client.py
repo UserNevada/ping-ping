@@ -88,7 +88,7 @@ class PingClient(discord.Client):
 
     def create_alert_message(self, member_name: str, channel_name: str) -> str:
         alert_message: str = f"""
-        🚨 {member_name} Joined {channel_name}! 🚨
-        Go join him, now!
-        """
+🚨 {member_name} Joined {channel_name}! 🚨
+Go join him, now!
+"""
         return alert_message
