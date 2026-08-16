@@ -1,7 +1,7 @@
 [project]
 name = "ping"
 version = "0.1.0"
-description = "Personal Discord Bot that pings a role when someone joins a voice channel."
+description = "Personal Discord Bot that sends a message to a text channel when someone joins a voice channel."
 readme = "README.md"
 authors = [
     { name = "Nevada", email = "migatosellamakiko@proton.me" }
