@@ -8,7 +8,7 @@ Personal Discord Bot that sends a message to a text channel when someone joins a
     - [x] Send message
 - [x] Wait to avoid accidental alert
 - [x] format with ruff
-- [ ] improve the logs, because they're trash
+- [x] improve the logs, because they're trash
 
 ---
 

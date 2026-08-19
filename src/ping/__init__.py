@@ -12,7 +12,6 @@ def run_client() -> None:
     client.run(BOT_TOKEN)
 
 def main() -> None:
-    print("Hello from ping!")
     run_client()
 
 

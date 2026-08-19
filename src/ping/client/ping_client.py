@@ -4,11 +4,12 @@ from discord.channel import TextChannel
 from discord.errors import Forbidden, HTTPException, NotFound
 
 from ping.configuration import DISCORD_BOT_ALERT_CHANNEL_ID, TIME_TO_CONFIRM
+from ping.logger import logger
 
 
 class PingClient(discord.Client):
     async def on_ready(self) -> None:
-        print(f"Logged on as {self.user}!")
+        logger.info(f"Logged on as {self.user}!")
 
     @staticmethod
     def _joining(after: VoiceState) -> bool:
@@ -24,29 +25,27 @@ class PingClient(discord.Client):
     def _first_to_join(after: VoiceState) -> bool | None:
         if after.channel is not None:
             return len(after.channel.members) == 1
-        else:
-            print("Channel is none?")
 
     @staticmethod
     async def _wait_before_ping(time_to_confirm: int) -> None:
-        print("Start countdown...")
+        logger.info("Start countdown...")
         # I wonder if this is possible without asyncio...
         import asyncio
         await asyncio.sleep(time_to_confirm)
-        print("Countdown done!")
+        logger.info("Countdown done!")
 
     async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState) -> None:
         if self._joining(after):
-            print(f"{member.name} Changed or left voice channel...")
+            logger.debug(f"{member.name} Changed or left voice channel...")
             return
         if self._not_mute_or_deaf(before, after):
-            print(f"{member.name} muted/unmuted or deafen/undeafen...")
+            logger.debug(f"{member.name} muted/unmuted or deafen/undeafen...")
             return
         if not self._first_to_join(after):
-            print(f"{member.name} was not the first in its channel...")
+            logger.debug(f"{member.name} was not the first in its channel...")
             return
 
-        print(f"{member.name} Joined a Voice Channel")
+        logger.info(f"{member.name} Joined {after.channel.name}")
 
         # Wait to avoid doing ping on accidental join
         await self._wait_before_ping(TIME_TO_CONFIRM)
@@ -60,17 +59,17 @@ class PingClient(discord.Client):
         try:
             voice_state = await member.fetch_voice()
             if voice_state.channel is None:
-                print("Could not find user channel")
+                logger.warning("Could not find user channel")
                 return
 
             if before.channel is not None:
                 # If we don't close we'll send an alert twice
                 self.voice_channel_alert(member.display_name, voice_state.channel.name, DISCORD_BOT_ALERT_CHANNEL_ID).close()
-                print(f"{member.name} changed channel...")
+                logger.info(f"{member.name} changed channel...")
             else:
                 await self.voice_channel_alert(member.display_name, voice_state.channel.name, DISCORD_BOT_ALERT_CHANNEL_ID)
         except NotFound, Forbidden, HTTPException:
-            print(f"{member.name} left...")
+            logger.info(f"{member.name} left...")
 
     async def voice_channel_alert(self, member_name: str, channel_to_announce: str, alert_channel_id: str | None) -> None:
         if alert_channel_id is None:
@@ -84,7 +83,7 @@ class PingClient(discord.Client):
 
         alert_message: str = self.create_alert_message(member_name, channel_to_announce)
         _send = await alert_channel.send(alert_message)
-        print("Alert!")
+        logger.info("Sent alert!")
 
     def create_alert_message(self, member_name: str, channel_name: str) -> str:
         alert_message: str = f"""
